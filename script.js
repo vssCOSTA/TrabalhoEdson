@@ -1,23 +1,29 @@
 const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2024/Borussia%20Dor';
 
-const getMatches = async () => {
+const pageSize = 4;
+
+const getMatches = async (pageNumber) => {
+    pageNumber = pageNumber <= 0 ? 1 : pageNumber * pageSize
+    
+    let pageCount = pageNumber + pageSize
+
     try {
         const response = await fetch(apiData);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log(data.slice(0, 10));
-        return data.slice(0, 10);
+        console.log(data.slice(pageNumber, pageCount));
+        return data.slice(pageNumber, pageCount);
     } catch (error) {
         console.error('Erro:', error);
         return null;  // Retorna null em caso de erro
     }
 };
 
-const initMatches = async () => {
+const initMatches = async (pageNumber) => {
     try {
-        const data = await getMatches();
+        const data = await getMatches(pageNumber);
         
         const teamsBackground = document.getElementById('teamsBackground');
         teamsBackground.innerHTML = ''; // Limpa qualquer conteúdo existente
