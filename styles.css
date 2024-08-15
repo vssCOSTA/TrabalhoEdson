@@ -51,6 +51,28 @@ body {
     box-sizing: border-box; /* Inclui padding e bordas no tamanho total do elemento */
 }
 
+#content {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+.paginator {
+    display: flex;
+    justify-content: center;
+}
+.paginator button {
+    margin: 0 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid #ddd;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+.paginator button.active {
+    background-color: #007bff;
+    color: white;
+}
+
 .match-container {
     display: flex;
     align-items: center;
