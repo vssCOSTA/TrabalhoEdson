@@ -1,6 +1,7 @@
-const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2024/Borussia%20Dor';
+    const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2023';
     const pageSize = 4;
     let totalPages = 0; // Número total de páginas
+    let actualPage = 1;
 
     // Função para obter os dados das partidas
     const getMatches = async (pageNumber) => {
@@ -64,10 +65,27 @@ const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2024/Borussia%20Dor'
                     team2Image.alt = 'Team 2 Image';
                     team2Image.style.width = '100px';
                     team2Image.style.height = '100px';
+                    
+                    const scoreboard = document.createElement('p');
+                    let pointsTeam1 = 0;
+                    let pointsTeam2 = 0;
+                    if (match.matchIsFinished == true){
+                        if(match.matchResults){
+                            match.matchResults.forEach((result) => {
+                                pointsTeam1 = result.pointsTeam1;
+                                pointsTeam2 = result.pointsTeam2;
+                            })                            
+                        }
+                        
+                    }
+                    
+                    scoreboard.textContent = match.team1.shortName + ' ' + pointsTeam1 + ' X ' + pointsTeam1 + ' ' + match.team2.shortName 
+
 
                     matchContainer.appendChild(team1Image);
                     matchContainer.appendChild(vsIcon);
                     matchContainer.appendChild(team2Image);
+                    matchContainer.appendChild(scoreboard);
 
                     teamsBackground.appendChild(matchContainer);
                 });
@@ -98,22 +116,48 @@ const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2024/Borussia%20Dor'
         paginatorDiv.className = 'paginator';
         teamsBackground.appendChild(paginatorDiv);
 
+
+        const beforeButton = document.createElement('button');
+        beforeButton.innerText = '<'
+        beforeButton.onclick = () => {
+            actualPage--;
+            initMatches(actualPage);
+            updatePaginator(actualPage);
+        };
+        paginatorDiv.appendChild(beforeButton);
+
+        
+        
+        let initialIndex = actualPage % 5 == 0 ? actualPage : actualPage - actualPage % 5;
+        initialIndex = initialIndex == 0 ? 1 : initialIndex;
         // Cria os botões de paginação
-        for (let i = 1; i <= totalPages; i++) {
+        for (let i = initialIndex; i <= initialIndex + 5; i++) {
             const button = document.createElement('button');
             button.innerText = i;
+            button.classList.toggle('active', i === actualPage);
             button.onclick = () => {
                 initMatches(i);
                 updatePaginator(i);
             };
             paginatorDiv.appendChild(button);
         }
+
+
+        const afterButton = document.createElement('button');
+        afterButton.innerText = '>'
+        afterButton.onclick = () => {
+            actualPage++;
+            initMatches(actualPage);
+            updatePaginator(actualPage);
+        };
+        paginatorDiv.appendChild(afterButton);
     }
 
     // Função para atualizar o estado dos botões de paginação
     function updatePaginator(currentPage) {
         const buttons = document.querySelectorAll('#paginator button');
         buttons.forEach((button, index) => {
+            actualPage = currentPage;
             button.classList.toggle('active', index + 1 === currentPage);
         });
     }
