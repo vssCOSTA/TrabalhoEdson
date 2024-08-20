@@ -109,6 +109,11 @@ body {
     text-align: center;
 }
 
+.match-date {
+    font-size: 14px;
+    color: #555; /* Cor para a data, ajuste conforme necessário */
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

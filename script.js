@@ -1,5 +1,5 @@
-const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2023';
-const pageSize = 4;
+const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2024';
+const pageSize = 3;
 let totalPages = 0; // Número total de páginas
 let actualPage = 1;
 const fallbackImageUrl = 'imgs/team-default.png';
@@ -17,7 +17,7 @@ const getMatches = async () => {
         // Calcula o total de páginas
         totalPages = Math.ceil(data.length / pageSize);
 
-        return data;
+        return data.sort((a, b) => a.matchDateTimeUTC + b.matchDateTimeUTC);;
     } catch (error) {
         console.error('Erro:', error);
         return null;
@@ -95,7 +95,15 @@ const initMatches = async (pageNumber) => {
             
                 scoreboard.textContent = `${match.team1.shortName} ${pointsTeam1} X ${pointsTeam2} ${match.team2.shortName}`;
             
-                // Adiciona o placar depois das imagens
+                // Adiciona a data do jogo
+                const dateElement = document.createElement('p');
+                dateElement.className = 'match-date';
+                const matchDate = new Date(match.matchDateTimeUTC);
+                const formattedDate = matchDate.toLocaleDateString(); // Ajuste o formato conforme necessário
+                dateElement.textContent = `Data do Jogo: ${formattedDate}`;
+            
+                // Adiciona todos os elementos ao container
+                matchContainer.appendChild(dateElement);
                 matchContainer.appendChild(imagesContainer);
                 matchContainer.appendChild(scoreboard);
             
