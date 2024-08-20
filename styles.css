@@ -90,6 +90,25 @@ body {
     animation: spin 1.5s linear infinite;
 }
 
+.match-container {
+    display: flex;
+    flex-direction: column; /* Empilha os elementos verticalmente */
+    align-items: center; /* Centraliza os elementos horizontalmente */
+    margin-bottom: 15px; /* Espaçamento entre os jogos */
+}
+
+.images-container {
+    display: flex;
+    align-items: center; /* Alinha as imagens verticalmente no centro */
+    margin-bottom: 7px; /* Espaçamento entre as imagens e o placar */
+}
+
+.scoreboard {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

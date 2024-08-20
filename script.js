@@ -44,16 +44,18 @@ const initMatches = async (pageNumber) => {
             data.forEach((match) => {
                 const matchContainer = document.createElement('div');
                 matchContainer.className = 'match-container'; // Adiciona a classe para estilização
-
+            
+                const imagesContainer = document.createElement('div');
+                imagesContainer.className = 'images-container'; // Container para as imagens e placar
+            
                 const team1Image = document.createElement('img');
                 team1Image.alt = 'Team 1 Image';
                 team1Image.style.width = '100px';
                 team1Image.style.height = '100px';
                 
                 const primaryImageUrl = match.team1.teamIconUrl; // A URL da imagem principal               
-                
                 loadImageWithFallback(team1Image, primaryImageUrl, fallbackImageUrl);
-
+            
                 const vsIcon = document.createElement('img');
                 vsIcon.src = 'imgs/vs.png';
                 vsIcon.alt = 'VS Icon';
@@ -61,20 +63,21 @@ const initMatches = async (pageNumber) => {
                 vsIcon.style.height = '50px';
                 vsIcon.style.marginLeft = '20px';
                 vsIcon.style.marginRight = '20px';
-
+            
                 const team2Image = document.createElement('img');
-                team2Image.src = match.team2.teamIconUrl;
                 team2Image.alt = 'Team 2 Image';
                 team2Image.style.width = '100px';
                 team2Image.style.height = '100px';
-
-
+                
                 const primaryImage2Url = match.team2.teamIconUrl; // A URL da imagem principal
-                
                 loadImageWithFallback(team2Image, primaryImage2Url, fallbackImageUrl);
-
-                
+            
+                imagesContainer.appendChild(team1Image);
+                imagesContainer.appendChild(vsIcon);
+                imagesContainer.appendChild(team2Image);
+            
                 const scoreboard = document.createElement('p');
+                scoreboard.className = 'scoreboard';
                 let pointsTeam1 = 0;
                 let pointsTeam2 = 0;
                 if (match.matchIsFinished === true && match.matchResults) {
@@ -83,16 +86,16 @@ const initMatches = async (pageNumber) => {
                         pointsTeam2 = result.pointsTeam2;
                     });
                 }
-                
+            
                 scoreboard.textContent = `${match.team1.shortName} ${pointsTeam1} X ${pointsTeam2} ${match.team2.shortName}`;
-
-                matchContainer.appendChild(team1Image);
-                matchContainer.appendChild(vsIcon);
-                matchContainer.appendChild(team2Image);
+            
+                // Adiciona o placar depois das imagens
+                matchContainer.appendChild(imagesContainer);
                 matchContainer.appendChild(scoreboard);
-
-                teamsBackground.appendChild(matchContainer);
+            
+                teamsBackground.appendChild(matchContainer); 
             });
+            
 
             createPaginator();
         } else {
