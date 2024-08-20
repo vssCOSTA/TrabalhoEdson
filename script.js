@@ -3,13 +3,10 @@ const pageSize = 4;
 let totalPages = 0; // Número total de páginas
 let actualPage = 1;
 const fallbackImageUrl = 'imgs/team-default.png';
+let allData = [];
 
 // Função para obter os dados das partidas
-const getMatches = async (pageNumber) => {
-    pageNumber = Math.max(pageNumber, 1) - 1; // Ajuste para zero-based index
-    const start = pageNumber * pageSize;
-    const end = start + pageSize;
-
+const getMatches = async () => {
     try {
         const response = await fetch(apiData);
         if (!response.ok) {
@@ -20,7 +17,7 @@ const getMatches = async (pageNumber) => {
         // Calcula o total de páginas
         totalPages = Math.ceil(data.length / pageSize);
 
-        return data.slice(start, end);
+        return data;
     } catch (error) {
         console.error('Erro:', error);
         return null;
@@ -30,7 +27,16 @@ const getMatches = async (pageNumber) => {
 // Função para inicializar a exibição das partidas
 const initMatches = async (pageNumber) => {
     try {
-        const data = await getMatches(pageNumber);
+        if (allData && allData.length <= 0){
+            allData = await getMatches();
+        }
+
+        pageNumber = Math.max(pageNumber, 1) - 1; // Ajuste para zero-based index
+        const start = pageNumber * pageSize;
+        const end = start + pageSize;
+
+        data = allData.slice(start, end);
+        
         
         const teamsBackground = document.getElementById('teamsBackground');
         teamsBackground.innerHTML = ''; // Limpa qualquer conteúdo existente
@@ -132,8 +138,8 @@ function createPaginator() {
     };
     paginatorDiv.appendChild(beforeButton);
 
-    let initialIndex = Math.max(1, Math.floor((actualPage + 1) / 5) * 5);
-    let endIndex = Math.min(totalPages, initialIndex + 4);
+    let initialIndex = Math.max(1, Math.floor((actualPage) / 5) * 5);
+    let endIndex = Math.min(totalPages, initialIndex + 5);
 
     for (let i = initialIndex; i <= endIndex; i++) {
         const button = document.createElement('button');
