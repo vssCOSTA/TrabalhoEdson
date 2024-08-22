@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,19 +16,35 @@
             <li class="navbar-item"><a href="#buyPoints" class="navbar-link">Comprar Pontos</a></li>
             <li class="navbar-item"><a href="#redeemPoints" class="navbar-link">Trocar Pontos</a></li>
         </ul>
-    </nav>  
+    </nav>
 
 
-    
 
-    <div id="teamsBackground">  
+
+    <div id="teamsBackground">
         <div class="spinner"></div>
     </div>
 
     <!-- Inclua o arquivo JavaScript -->
     <script src="script.js"></script>
+    <script src="manage-data.js"></script>
     <script>
+
+        createDatabase();
+
+        let userAdmin = {
+            username: 'ADMIN',
+            password: '1234',
+            points: 2000,
+            bets: [
+                { matchId: 66631, winnerTeamId: 7, bet: 100, matchDone: true }
+            ]
+        }
+
+        registerUser(userAdmin);
+
         initMatches(1);
     </script>
-</body>
+    </body>
+
 </html>

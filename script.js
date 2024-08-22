@@ -1,4 +1,4 @@
-const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2024';
+const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2023';
 const pageSize = 3;
 let totalPages = 0; // Número total de páginas
 let actualPage = 1;
@@ -13,7 +13,7 @@ const getMatches = async () => {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-
+        
         // Calcula o total de páginas
         totalPages = Math.ceil(data.length / pageSize);
 
@@ -36,7 +36,6 @@ const initMatches = async (pageNumber) => {
         const end = start + pageSize;
 
         data = allData.slice(start, end);
-        
         
         const teamsBackground = document.getElementById('teamsBackground');
         teamsBackground.innerHTML = ''; // Limpa qualquer conteúdo existente
