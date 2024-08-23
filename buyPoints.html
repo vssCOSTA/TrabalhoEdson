@@ -21,35 +21,37 @@
         </ul>
     </nav>
 
-        <header class="buy-points-header">
-            <h1>Comprar Pontos</h1>
-        </header>
+    <header class="buy-points-header">
+        <h1>Comprar Pontos</h1>
+    </header>
 
-            <section class="buy-points-purchase-options">
-                <div class="buy-points-card">
-                    <h3>Pacote Básico</h3>
-                    <p>100 Pontos</p>
-                    <p>R$ 10,00</p>
-                    <button onclick="buyPoints('basic')">Comprar</button>
-                </div>
-                <div class="buy-points-card">
-                    <h3>Pacote Intermediário</h3>
-                    <p>500 Pontos</p>
-                    <p>R$ 40,00</p>
-                    <button onclick="buyPoints('intermediate')">Comprar</button>
-                </div>
-                <div class="buy-points-card">
-                    <h3>Pacote Premium</h3>
-                    <p>1000 Pontos</p>
-                    <p>R$ 85,00</p>
-                    <button onclick="buyPoints('premium')">Comprar</button>
-                </div>
-            </section>
+    <section class="buy-points-purchase-options">
+        <div class="buy-points-card">
+            <h3>Pacote Básico</h3>
+            <p>100 Pontos</p>
+            <p>R$ 10,00</p>
+            <button onclick="buyPoints('basic')">Comprar</button>
+        </div>
+        <div class="buy-points-card">
+            <h3>Pacote Intermediário</h3>
+            <p>500 Pontos</p>
+            <p>R$ 40,00</p>
+            <button onclick="buyPoints('intermediate')">Comprar</button>
+        </div>
+        <div class="buy-points-card">
+            <h3>Pacote Premium</h3>
+            <p>1000 Pontos</p>
+            <p>R$ 85,00</p>
+            <button onclick="buyPoints('premium')">Comprar</button>
+        </div>
+    </section>
 
     <script src="scripts/buy-points.js"></script>
     <script src="scripts/manage-data.js"></script>
     <script>
-
+        if (!getCookie('userId')) {
+            window.location.href = 'login.html';
+        }
     </script>
 
 
