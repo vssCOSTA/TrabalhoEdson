@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <p id="question-sign-up">Don't have an account? <a href="register.html">Sign up</a></p>
+
+
+        <button type="submit">Login</button>
+    </form>
+
+    <script src="scripts/manage-data.js"></script>
+    <script>
+        if (getCookie('userId')) {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Impede o envio do formulário para a página de destino padrão
+
+            // Captura os valores dos campos do formulário
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            userExists(username, function (exists) {
+                if (!exists) {
+                    alert('User not exists')
+                    document.getElementById('username').value = ''
+                    document.getElementById('password').value = ''
+                } else {
+                    const user = {
+                        username: username,
+                        password: password,
+                        points: 0,
+                        bets: [
+
+                        ]
+                    }
+
+                    loginUser(username, password, function (userId) {
+                        if (userId) {
+                            setCookie('userId', userId, 2);
+
+                            window.location.href = 'index.html';
+                        } else {
+                            alert('Error while registering user')
+                            document.getElementById('username').value = ''
+                            document.getElementById('password').value = ''
+                            document.getElementById('confirm-password').value = ''
+                        }
+                    });
+
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

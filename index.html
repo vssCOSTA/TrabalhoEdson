@@ -26,22 +26,12 @@
     </div>
 
     <!-- Inclua o arquivo JavaScript -->
-    <script src="script.js"></script>
-    <script src="manage-data.js"></script>
+    <script src="scripts/script.js"></script>
+    <script src="scripts/manage-data.js"></script>
     <script>
-
-        createDatabase();
-
-        let userAdmin = {
-            username: 'ADMIN',
-            password: '1234',
-            points: 2000,
-            bets: [
-                { matchId: 66631, winnerTeamId: 7, bet: 100, matchDone: true }
-            ]
+        if (!getCookie('userId')) {
+            window.location.href = 'login.html';
         }
-
-        registerUser(userAdmin);
 
         initMatches(1);
     </script>

@@ -13,8 +13,16 @@ const createDatabase = () => {
     };
 
     request.onsuccess = function (event) {
-        let db = event.target.result;
-        console.log("Banco de dados aberto com sucesso.");
+        let userAdmin = {
+            username: 'ADMIN',
+            password: '1234',
+            points: 2000,
+            bets: [
+                { matchId: 66631, winnerTeamId: 7, bet: 100, matchDone: true }
+            ]
+        }
+        
+        registerUser(userAdmin);
     };
 
     request.onerror = function (event) {
@@ -23,8 +31,8 @@ const createDatabase = () => {
 }
 
 
-const registerUser = (user) => {
-
+const registerUser = (user, callback) => {
+    
     userExists(user.username, function (exists) {
         if (!exists) {
             let request = indexedDB.open(dbName, 3);
@@ -39,18 +47,20 @@ const registerUser = (user) => {
 
                 action.onsuccess = function (event) {
                     console.log("Usuário registrado com ID:", event.target.result);
+                    callback(event.target.result)
                 };
 
                 action.onerror = function (event) {
                     console.log("Erro ao adicionar Usuário:", event.target.errorCode);
+                    callback(0)
                 };
             }
-        }
+        } 
     });
 }
 
 
-const loginUser = (username, password) => {
+const loginUser = (username, password, callback) => {
     let request = indexedDB.open(dbName, 3);
 
     request.onsuccess = function (event) {
@@ -66,16 +76,20 @@ const loginUser = (username, password) => {
             if (action.result) {
                 if (action.result.password == password) {
                     console.log("Logado com sucesso")
+                    callback(action.result.id)
                 } else {
                     console.log("Login Inválido")
+                    callback(0)
                 }
             } else {
                 console.log("Usuário não encontrado")
+                callback(0)
             }
         };
 
         action.onerror = function (event) {
             console.log("Erro ao encontrar Usuário:", event.target.errorCode);
+            callback(0)
         };
     }
 }
@@ -111,3 +125,28 @@ const userExists = (username, callback) => {
         callback(false);  // Trate o erro como usuário não encontrado
     };
 };
+
+const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+
+    const parts = value.split(`; ${name}=`);
+
+    if (parts.length === 2) {
+        return decodeURIComponent(parts.pop().split(';').shift());
+    }
+
+    return null;
+}
+
+const setCookie = (name, value, hours) => {
+    let expires = "";
+    if (hours) {
+        const date = new Date();
+        date.setTime(date.getTime() + (hours * 60 * 60 * 1000)); // Converte horas para milissegundos
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+
+createDatabase();
