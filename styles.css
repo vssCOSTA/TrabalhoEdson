@@ -24,7 +24,8 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-between; /* Espaça os itens de forma que o logout fique na extremidade direita */
+    align-items: center;
 }
 
 .navbar-item {
@@ -39,6 +40,16 @@ body {
 
 .navbar-link:hover {
     text-decoration: underline;
+}
+
+/* Estilo específico para o botão de logout */
+.navbar-logout {
+    font-weight: bold; /* Apenas um exemplo, ajuste conforme necessário */
+}
+
+/* Remove a margem do item de logout para alinhamento adequado */
+.navbar-item-logout {
+    margin-left: auto; /* Move o botão de logout para o lado direito */
 }
 
 #teamsBackground {

@@ -148,5 +148,14 @@ const setCookie = (name, value, hours) => {
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
+const deleteCookie = (nome) => {
+    const dataExpiracao = "Thu, 01 Jan 1970 00:00:00 GMT";
+    
+    document.cookie = `${nome}=; expires=${dataExpiracao}; path=/`;
+}
+
+// Exemplo de uso
+excluirCookie('nomeDoCookie');
+
 
 createDatabase();

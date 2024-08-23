@@ -15,6 +15,8 @@
             <li class="navbar-item"><a href="#yourBets" class="navbar-link">Suas Apostas</a></li>
             <li class="navbar-item"><a href="#buyPoints" class="navbar-link">Comprar Pontos</a></li>
             <li class="navbar-item"><a href="#redeemPoints" class="navbar-link">Trocar Pontos</a></li>
+            <li class="navbar-item navbar-item-logout"><a href="#logout" id="logout" class="navbar-link navbar-logout">Logout</a>
+            </li>
         </ul>
     </nav>
 
@@ -26,12 +28,18 @@
     </div>
 
     <!-- Inclua o arquivo JavaScript -->
-    <script src="scripts/script.js"></script>
+    <script src="scripts/matches.js"></script>
     <script src="scripts/manage-data.js"></script>
     <script>
         if (!getCookie('userId')) {
             window.location.href = 'login.html';
         }
+
+        document.getElementById('logout').addEventListener('click', function(event) {
+            
+            deleteCookie('userId');
+            window.location.href = 'login.html';
+        });
 
         initMatches(1);
     </script>
