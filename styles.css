@@ -125,6 +125,84 @@ body {
     color: #555; /* Cor para a data, ajuste conforme necessário */
 }
 
+.buy-points-container {
+    width: 80%;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.buy-points-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.buy-points-header h1 {
+    color: #333;
+}
+
+.buy-points-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.buy-points-purchase-options {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.buy-points-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-left: 5%;
+    margin-bottom: 5%;
+    width: 250px;
+}
+
+.buy-points-card h3 {
+    margin-top: 0;
+}
+
+button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.buy-points-payment-methods {
+    margin-top: 20px;
+}
+
+.buy-points-method {
+    margin: 10px 0;
+}
+
+.buy-points-checkout {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.buy-points-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

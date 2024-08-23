@@ -11,7 +11,7 @@ const createDatabase = () => {
 
         objectStore.createIndex("username", "username", { unique: true });
     };
-
+    
     request.onsuccess = function (event) {
         let userAdmin = {
             username: 'ADMIN',
@@ -22,7 +22,7 @@ const createDatabase = () => {
             ]
         }
         
-        registerUser(userAdmin);
+        registerUser(userAdmin, function() { });
     };
 
     request.onerror = function (event) {
@@ -154,8 +154,68 @@ const deleteCookie = (nome) => {
     document.cookie = `${nome}=; expires=${dataExpiracao}; path=/`;
 }
 
-// Exemplo de uso
-excluirCookie('nomeDoCookie');
+
+
+
+
+
+
+
+const updatePoints = (userId, points) => {
+    let request = indexedDB.open(dbName, 3);
+
+    request.onsuccess = function (event) {
+        let db = event.target.result;
+
+        let transaction = db.transaction([tblName], "readwrite");
+        let objectStore = transaction.objectStore(tblName);
+
+        console.log(objectStore)
+        
+        let action = objectStore.get(userId);
+
+        action.onsuccess = function (event) {
+            const user = action.result;
+            console.log(user)
+
+            user.points += points;
+
+            if (user){
+                const putRequest = objectStore.put(user);
+
+                putRequest.onsuccess = function() {
+                    console.log('Pontos adicionados com sucesso!');
+                };
+
+                putRequest.onerror = function(event) {
+                    console.error('Erro ao adicionar pontos ', event.target.error);
+                };
+            }
+        };
+
+        action.onerror = function (event) {
+            console.log("Erro ao encontrar Usuário:", event.target.errorCode);
+            callback(false);  // Trate o erro como usuário não encontrado
+        };
+    };
+
+    request.onerror = function (event) {
+        console.log("Erro ao abrir o banco de dados:", event.target.errorCode);
+        callback(false);  // Trate o erro como usuário não encontrado
+    };
+}
+
+
+
+document.getElementById('logout').addEventListener('click', function(event) {
+            
+    deleteCookie('userId');
+    window.location.href = 'login.html';
+});
+
+
+
+
 
 
 createDatabase();
