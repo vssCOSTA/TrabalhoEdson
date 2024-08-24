@@ -13,7 +13,7 @@ const getMatches = async () => {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        
+
         // Calcula o total de páginas
         totalPages = Math.ceil(data.length / pageSize);
 
@@ -27,7 +27,7 @@ const getMatches = async () => {
 // Função para inicializar a exibição das partidas
 const initMatches = async (pageNumber) => {
     try {
-        if (allData && allData.length <= 0){
+        if (allData && allData.length <= 0) {
             allData = await getMatches();
         }
 
@@ -36,7 +36,7 @@ const initMatches = async (pageNumber) => {
         const end = start + pageSize;
 
         data = allData.slice(start, end);
-        
+
         const teamsBackground = document.getElementById('teamsBackground');
         teamsBackground.innerHTML = ''; // Limpa qualquer conteúdo existente
 
@@ -49,18 +49,18 @@ const initMatches = async (pageNumber) => {
             data.forEach((match) => {
                 const matchContainer = document.createElement('div');
                 matchContainer.className = 'match-container'; // Adiciona a classe para estilização
-            
+
                 const imagesContainer = document.createElement('div');
                 imagesContainer.className = 'images-container'; // Container para as imagens e placar
-            
+
                 const team1Image = document.createElement('img');
                 team1Image.alt = 'Team 1 Image';
                 team1Image.style.width = '100px';
                 team1Image.style.height = '100px';
-                
+
                 const primaryImageUrl = match.team1.teamIconUrl; // A URL da imagem principal               
                 loadImageWithFallback(team1Image, primaryImageUrl, fallbackImageUrl);
-            
+
                 const vsIcon = document.createElement('img');
                 vsIcon.src = 'imgs/vs.png';
                 vsIcon.alt = 'VS Icon';
@@ -68,19 +68,19 @@ const initMatches = async (pageNumber) => {
                 vsIcon.style.height = '50px';
                 vsIcon.style.marginLeft = '20px';
                 vsIcon.style.marginRight = '20px';
-            
+
                 const team2Image = document.createElement('img');
                 team2Image.alt = 'Team 2 Image';
                 team2Image.style.width = '100px';
                 team2Image.style.height = '100px';
-                
+
                 const primaryImage2Url = match.team2.teamIconUrl; // A URL da imagem principal
                 loadImageWithFallback(team2Image, primaryImage2Url, fallbackImageUrl);
-            
+
                 imagesContainer.appendChild(team1Image);
                 imagesContainer.appendChild(vsIcon);
                 imagesContainer.appendChild(team2Image);
-            
+
                 const scoreboard = document.createElement('p');
                 scoreboard.className = 'scoreboard';
                 let pointsTeam1 = 0;
@@ -91,24 +91,24 @@ const initMatches = async (pageNumber) => {
                         pointsTeam2 = result.pointsTeam2;
                     });
                 }
-            
+
                 scoreboard.textContent = `${match.team1.shortName} ${pointsTeam1} X ${pointsTeam2} ${match.team2.shortName}`;
-            
+
                 // Adiciona a data do jogo
                 const dateElement = document.createElement('p');
                 dateElement.className = 'match-date';
                 const matchDate = new Date(match.matchDateTimeUTC);
                 const formattedDate = matchDate.toLocaleDateString(); // Ajuste o formato conforme necessário
                 dateElement.textContent = `Data do Jogo: ${formattedDate}`;
-            
+
                 // Adiciona todos os elementos ao container
                 matchContainer.appendChild(dateElement);
                 matchContainer.appendChild(imagesContainer);
                 matchContainer.appendChild(scoreboard);
-            
-                teamsBackground.appendChild(matchContainer); 
+
+                teamsBackground.appendChild(matchContainer);
             });
-            
+
 
             createPaginator();
         } else {
@@ -124,7 +124,7 @@ const initMatches = async (pageNumber) => {
 // Função para criar o paginator
 function createPaginator() {
     const teamsBackground = document.getElementById('teamsBackground');
-    
+
     // Cria o div para o conteúdo
     const contentDiv = document.createElement('div');
     contentDiv.id = 'content';
@@ -169,6 +169,54 @@ function createPaginator() {
     paginatorDiv.appendChild(afterButton);
 }
 
+
+function createPaginatorByUser(userId) {
+    const teamsBackground = document.getElementById('teamsBackground');
+
+    // Cria o div para o conteúdo
+    const contentDiv = document.createElement('div');
+    contentDiv.id = 'content';
+    teamsBackground.appendChild(contentDiv);
+
+    // Cria o div para os botões de paginação
+    const paginatorDiv = document.createElement('div');
+    paginatorDiv.id = 'paginator';
+    paginatorDiv.className = 'paginator';
+    teamsBackground.appendChild(paginatorDiv);
+
+    const beforeButton = document.createElement('button');
+    beforeButton.innerText = '<';
+    beforeButton.disabled = actualPage === 1; // Desativa o botão se estiver na primeira página
+    beforeButton.onclick = () => {
+        actualPage--;
+        initMatchesByUser(userId, actualPage);
+    };
+    paginatorDiv.appendChild(beforeButton);
+
+    let initialIndex = Math.max(1, Math.floor((actualPage) / 5) * 5);
+    let endIndex = Math.min(totalPages, initialIndex + 5);
+
+    for (let i = initialIndex; i <= endIndex; i++) {
+        const button = document.createElement('button');
+        button.innerText = i;
+        button.classList.toggle('active', i === actualPage);
+        button.onclick = () => {
+            actualPage = i;
+            initMatchesByUser(userId, i);
+        };
+        paginatorDiv.appendChild(button);
+    }
+
+    const afterButton = document.createElement('button');
+    afterButton.innerText = '>';
+    afterButton.disabled = actualPage === totalPages; // Desativa o botão se estiver na última página
+    afterButton.onclick = () => {
+        actualPage++;
+        initMatchesByUser(userId, actualPage);
+    };
+    paginatorDiv.appendChild(afterButton);
+}
+
 // Função para atualizar o estado dos botões de paginação
 function updatePaginator(currentPage) {
     const buttons = document.querySelectorAll('#paginator button');
@@ -180,11 +228,11 @@ function updatePaginator(currentPage) {
 function loadImageWithFallback(imgElement, primaryUrl, fallbackUrl) {
     imgElement.src = primaryUrl;
 
-    imgElement.onload = function() {
+    imgElement.onload = function () {
         imgElement.onload = null; // Limpa o evento
     };
 
-    imgElement.onerror = function() {
+    imgElement.onerror = function () {
         imgElement.src = fallbackUrl;
     };
 }
@@ -193,3 +241,113 @@ function loadImageWithFallback(imgElement, primaryUrl, fallbackUrl) {
 document.addEventListener('DOMContentLoaded', () => {
     initMatches(actualPage);
 });
+
+
+
+
+// Função para inicializar a exibição das partidas
+const initMatchesByUser = async (userId, pageNumber) => {
+    try {
+        if (allData && allData.length <= 0) {
+            allData = await getMatches();
+        }
+
+        getBetsByUser(userId, function (user) {
+            const bets = user.bets;
+
+            const auxiliarMatchIds = new Set(bets.map(item => item.matchId));
+
+            data = allData.filter(item => auxiliarMatchIds.has(item.matchID));
+
+            console.log(data)
+
+            pageNumber = Math.max(pageNumber, 1) - 1; // Ajuste para zero-based index
+            const start = pageNumber * pageSize;
+            const end = start + pageSize;
+
+            const teamsBackground = document.getElementById('teamsBackground');
+            teamsBackground.innerHTML = ''; // Limpa qualquer conteúdo existente
+
+            const title = document.createElement('h1');
+            title.textContent = 'Partidas';
+            title.style.textAlign = 'center'; // Alinha o título ao centro
+            teamsBackground.appendChild(title);
+
+            if (data && data.length > 0) {
+                data.forEach((match) => {
+                    const matchContainer = document.createElement('div');
+                    matchContainer.className = 'match-container'; // Adiciona a classe para estilização
+
+                    const imagesContainer = document.createElement('div');
+                    imagesContainer.className = 'images-container'; // Container para as imagens e placar
+
+                    const team1Image = document.createElement('img');
+                    team1Image.alt = 'Team 1 Image';
+                    team1Image.style.width = '100px';
+                    team1Image.style.height = '100px';
+
+                    const primaryImageUrl = match.team1.teamIconUrl; // A URL da imagem principal               
+                    loadImageWithFallback(team1Image, primaryImageUrl, fallbackImageUrl);
+
+                    const vsIcon = document.createElement('img');
+                    vsIcon.src = 'imgs/vs.png';
+                    vsIcon.alt = 'VS Icon';
+                    vsIcon.style.width = '50px';
+                    vsIcon.style.height = '50px';
+                    vsIcon.style.marginLeft = '20px';
+                    vsIcon.style.marginRight = '20px';
+
+                    const team2Image = document.createElement('img');
+                    team2Image.alt = 'Team 2 Image';
+                    team2Image.style.width = '100px';
+                    team2Image.style.height = '100px';
+
+                    const primaryImage2Url = match.team2.teamIconUrl; // A URL da imagem principal
+                    loadImageWithFallback(team2Image, primaryImage2Url, fallbackImageUrl);
+
+                    imagesContainer.appendChild(team1Image);
+                    imagesContainer.appendChild(vsIcon);
+                    imagesContainer.appendChild(team2Image);
+
+                    const scoreboard = document.createElement('p');
+                    scoreboard.className = 'scoreboard';
+                    let pointsTeam1 = 0;
+                    let pointsTeam2 = 0;
+                    if (match.matchIsFinished === true && match.matchResults) {
+                        match.matchResults.forEach((result) => {
+                            pointsTeam1 = result.pointsTeam1;
+                            pointsTeam2 = result.pointsTeam2;
+                        });
+                    }
+
+                    scoreboard.textContent = `${match.team1.shortName} ${pointsTeam1} X ${pointsTeam2} ${match.team2.shortName}`;
+
+                    // Adiciona a data do jogo
+                    const dateElement = document.createElement('p');
+                    dateElement.className = 'match-date';
+                    const matchDate = new Date(match.matchDateTimeUTC);
+                    const formattedDate = matchDate.toLocaleDateString(); // Ajuste o formato conforme necessário
+                    dateElement.textContent = `Data do Jogo: ${formattedDate}`;
+
+                    // Adiciona todos os elementos ao container
+                    matchContainer.appendChild(dateElement);
+                    matchContainer.appendChild(imagesContainer);
+                    matchContainer.appendChild(scoreboard);
+
+                    teamsBackground.appendChild(matchContainer);
+                });
+
+
+                createPaginatorByUser(userId);
+            } else {
+                teamsBackground.innerHTML = 'Nenhuma partida encontrada.';
+            }
+        });
+
+
+    } catch (error) {
+        console.error('Erro ao carregar os dados:', error);
+        const teamsBackground = document.getElementById('teamsBackground');
+        teamsBackground.innerHTML = 'Erro ao carregar os dados.';
+    }
+};

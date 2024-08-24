@@ -206,6 +206,36 @@ const updatePoints = (userId, points) => {
 }
 
 
+const getBetsByUser = (userId, callback) => {
+    let request = indexedDB.open(dbName, 3);
+
+    request.onsuccess = function (event) {
+        let db = event.target.result;
+
+        let transaction = db.transaction([tblName], "readwrite");
+        let objectStore = transaction.objectStore(tblName);
+        
+        let action = objectStore.get(userId);
+
+        action.onsuccess = function (event) {
+            const user = action.result;
+            
+            callback(user); 
+        };
+
+        action.onerror = function (event) {
+            console.log("Erro ao encontrar Usuário:", event.target.errorCode);
+            callback(null);  // Trate o erro como usuário não encontrado
+        };
+    };
+
+    request.onerror = function (event) {
+        console.log("Erro ao abrir o banco de dados:", event.target.errorCode);
+        callback(null);  // Trate o erro como usuário não encontrado
+    };
+}
+
+
 
 document.getElementById('logout').addEventListener('click', function(event) {
             
