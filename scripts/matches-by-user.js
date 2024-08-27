@@ -1,4 +1,5 @@
-const apiData = 'https://api.openligadb.de/getmatchdata/bl1/2023';
+const actualYear = new Date().getFullYear();
+const apiData = `https://api.openligadb.de/getmatchdata/bl1/${actualYear}`;
 const pageSize = 3;
 let totalPages = 0;
 let actualPage = 1;
@@ -108,7 +109,7 @@ const initMatchesByUser = async (pageNumber) => {
 
                 createPaginatorByUser(userId);
             } else {
-                teamsBackground.innerHTML = 'Nenhuma partida encontrada.';
+                teamsBackground.innerHTML = 'No bets were placed on this account.';
             }
         });
     } catch (error) {

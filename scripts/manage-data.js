@@ -18,7 +18,7 @@ const createDatabase = () => {
             password: '1234',
             points: 2000,
             bets: [
-                { matchId: 66631, winnerTeamId: 7, bet: 100, matchDone: true }
+                { matchId: 66631, winnerTeamId: 7, bet: 100, betVerified: true }
             ]
         }
         
@@ -160,6 +160,58 @@ const deleteCookie = (nome) => {
 
 
 
+const bet = (userId, matchId, winnerTeamId, points) => {
+    let request = indexedDB.open(dbName, 3);
+
+    request.onsuccess = function (event) {
+        let db = event.target.result;
+
+        let transaction = db.transaction([tblName], "readwrite");
+        let objectStore = transaction.objectStore(tblName);
+
+        console.log(objectStore)
+        
+        let action = objectStore.get(userId);
+
+        action.onsuccess = function (event) {
+            const user = action.result;
+            
+            if (user.points < points){
+                alert('insufficient points');
+                return;
+            }
+
+            user.points -= points;
+
+
+            const newBet = { matchId: matchId, winnerTeamId: winnerTeamId, bet: points, betVerified: false }
+
+            user.bets.push(newBet);
+
+            if (user){
+                const putRequest = objectStore.put(user);
+
+                putRequest.onsuccess = function() {
+                    alert('Bet successfully placed');
+                };
+
+                putRequest.onerror = function(event) {
+                    console.error('Erro ao apostar pontos ', event.target.error);
+                };
+            }
+        };
+
+        action.onerror = function (event) {
+            console.log("Erro ao apostar:", event.target.errorCode);
+            callback(false);  // Trate o erro como usuário não encontrado
+        };
+    };
+
+    request.onerror = function (event) {
+        console.log("Erro ao abrir o banco de dados:", event.target.errorCode);
+        callback(false);  // Trate o erro como usuário não encontrado
+    };
+}
 
 const updatePoints = (userId, points) => {
     let request = indexedDB.open(dbName, 3);

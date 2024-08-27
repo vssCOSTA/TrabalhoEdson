@@ -85,6 +85,8 @@ body {
 }
 
 .match-container {
+    background-color: #dedede;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center; /* Garante que as imagens estejam centralizadas horizontalmente */
