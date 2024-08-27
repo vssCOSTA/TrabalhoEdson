@@ -46,7 +46,7 @@ const initMatches = async (pageNumber) => {
         teamsBackground.appendChild(title);
 
         if (data && data.length > 0) {
-            data.forEach((match) => {
+            data.forEach((match, index) => {
                 const matchContainer = document.createElement('div');
                 matchContainer.className = 'match-container'; // Adiciona a classe para estilização
 
@@ -105,6 +105,93 @@ const initMatches = async (pageNumber) => {
                 matchContainer.appendChild(dateElement);
                 matchContainer.appendChild(imagesContainer);
                 matchContainer.appendChild(scoreboard);
+
+                const openBoxBtn = document.createElement('button');
+                    openBoxBtn.id = 'openBoxBtn';
+                    openBoxBtn.innerText = 'Abrir Caixa de Aposta';
+
+                    const container = document.createElement('div');
+                    container.className = 'container-bet';
+
+                    const betBox = document.createElement('div');
+                    betBox.className = 'betBox';
+
+                    openBoxBtn.addEventListener('click', function () {
+                        if (betBox.style.display === 'none' || betBox.style.display === '') {
+                            betBox.style.display = 'block';
+                        } else {
+                            betBox.style.display = 'none';
+                        }
+                    });
+
+                    const title = document.createElement('h3');
+                    title.style.fontSize = '14px';
+                    title.style.marginBottom = '8px';
+                    title.innerText = 'Quem vence:';
+                    betBox.appendChild(title);
+
+                    const radioGroup = document.createElement('div');
+                    radioGroup.className = 'radio-group';
+
+                    const colors = [
+                        { id: `red_${index}`, label: match.team1.shortName, color: 'red' },
+                        { id: `green_${index}`, label: 'Empate', color: 'gray' },
+                        { id: `blue_${index}`, label: match.team2.shortName, color: 'blue' }
+                    ];
+
+                    colors.forEach(function (color) {
+                        const input = document.createElement('input');
+                        input.type = 'radio';
+                        input.id = color.id;
+                        input.name = `color_${index}`;
+                        input.value = color.color;
+
+                        const label = document.createElement('label');
+                        label.htmlFor = color.id;
+                        label.style.color = color.color;
+                        label.innerText = color.label;
+
+                        radioGroup.appendChild(input);
+                        radioGroup.appendChild(label);
+                    });
+
+                    betBox.appendChild(radioGroup);
+
+                    const pointsLabel = document.createElement('label');
+                    pointsLabel.style.fontSize = '12px';
+                    pointsLabel.htmlFor = `points_${index}`;
+                    pointsLabel.innerText = 'Insira os pontos:';
+                    betBox.appendChild(pointsLabel);
+
+                    const pointsInput = document.createElement('input');
+                    pointsInput.type = 'number';
+                    pointsInput.className = 'points';
+                    pointsInput.name = `points_${index}`;
+                    pointsInput.min = '1';
+                    pointsInput.step = '1';
+                    betBox.appendChild(pointsInput);
+
+                    const betBtn = document.createElement('button');
+                    betBtn.className = 'betBtn';
+                    betBtn.innerText = 'Apostar';
+                    betBtn.addEventListener('click', function () {
+                        const selectedColor = document.querySelector(`input[name="color_${index}"]:checked`);
+                        const colorValue = selectedColor ? selectedColor.value : null;
+                        const points = pointsInput.value;
+
+                        if (colorValue && points > 0) {
+                            alert(`Cor selecionada: ${colorValue}\nPontos: ${points}`);
+                        } else {
+                            alert('Por favor, selecione uma cor e insira os pontos.');
+                        }
+                    });
+                    betBox.appendChild(betBtn);
+
+                    betBox.style.display = 'none'; // Oculta a caixa de aposta inicialmente
+
+                    container.appendChild(openBoxBtn);
+                    container.appendChild(betBox);
+                    matchContainer.appendChild(container);
 
                 teamsBackground.appendChild(matchContainer);
             });
@@ -242,112 +329,3 @@ document.addEventListener('DOMContentLoaded', () => {
     initMatches(actualPage);
 });
 
-
-
-
-// Função para inicializar a exibição das partidas
-const initMatchesByUser = async (userId, pageNumber) => {
-    try {
-        if (allData && allData.length <= 0) {
-            allData = await getMatches();
-        }
-
-        getBetsByUser(userId, function (user) {
-            const bets = user.bets;
-
-            const auxiliarMatchIds = new Set(bets.map(item => item.matchId));
-
-            data = allData.filter(item => auxiliarMatchIds.has(item.matchID));
-
-            console.log(data)
-
-            pageNumber = Math.max(pageNumber, 1) - 1; // Ajuste para zero-based index
-            const start = pageNumber * pageSize;
-            const end = start + pageSize;
-
-            const teamsBackground = document.getElementById('teamsBackground');
-            teamsBackground.innerHTML = ''; // Limpa qualquer conteúdo existente
-
-            const title = document.createElement('h1');
-            title.textContent = 'Partidas';
-            title.style.textAlign = 'center'; // Alinha o título ao centro
-            teamsBackground.appendChild(title);
-
-            if (data && data.length > 0) {
-                data.forEach((match) => {
-                    const matchContainer = document.createElement('div');
-                    matchContainer.className = 'match-container'; // Adiciona a classe para estilização
-
-                    const imagesContainer = document.createElement('div');
-                    imagesContainer.className = 'images-container'; // Container para as imagens e placar
-
-                    const team1Image = document.createElement('img');
-                    team1Image.alt = 'Team 1 Image';
-                    team1Image.style.width = '100px';
-                    team1Image.style.height = '100px';
-
-                    const primaryImageUrl = match.team1.teamIconUrl; // A URL da imagem principal               
-                    loadImageWithFallback(team1Image, primaryImageUrl, fallbackImageUrl);
-
-                    const vsIcon = document.createElement('img');
-                    vsIcon.src = 'imgs/vs.png';
-                    vsIcon.alt = 'VS Icon';
-                    vsIcon.style.width = '50px';
-                    vsIcon.style.height = '50px';
-                    vsIcon.style.marginLeft = '20px';
-                    vsIcon.style.marginRight = '20px';
-
-                    const team2Image = document.createElement('img');
-                    team2Image.alt = 'Team 2 Image';
-                    team2Image.style.width = '100px';
-                    team2Image.style.height = '100px';
-
-                    const primaryImage2Url = match.team2.teamIconUrl; // A URL da imagem principal
-                    loadImageWithFallback(team2Image, primaryImage2Url, fallbackImageUrl);
-
-                    imagesContainer.appendChild(team1Image);
-                    imagesContainer.appendChild(vsIcon);
-                    imagesContainer.appendChild(team2Image);
-
-                    const scoreboard = document.createElement('p');
-                    scoreboard.className = 'scoreboard';
-                    let pointsTeam1 = 0;
-                    let pointsTeam2 = 0;
-                    if (match.matchIsFinished === true && match.matchResults) {
-                        match.matchResults.forEach((result) => {
-                            pointsTeam1 = result.pointsTeam1;
-                            pointsTeam2 = result.pointsTeam2;
-                        });
-                    }
-
-                    scoreboard.textContent = `${match.team1.shortName} ${pointsTeam1} X ${pointsTeam2} ${match.team2.shortName}`;
-
-                    // Adiciona a data do jogo
-                    const dateElement = document.createElement('p');
-                    dateElement.className = 'match-date';
-                    const matchDate = new Date(match.matchDateTimeUTC);
-                    const formattedDate = matchDate.toLocaleDateString(); // Ajuste o formato conforme necessário
-                    dateElement.textContent = `Data do Jogo: ${formattedDate}`;
-
-                    // Adiciona todos os elementos ao container
-                    matchContainer.appendChild(dateElement);
-                    matchContainer.appendChild(imagesContainer);
-                    matchContainer.appendChild(scoreboard);
-
-                    teamsBackground.appendChild(matchContainer);
-                });
-
-
-                createPaginatorByUser(userId);
-            } else {
-                teamsBackground.innerHTML = 'Nenhuma partida encontrada.';
-            }
-        });
-
-
-    } catch (error) {
-        console.error('Erro ao carregar os dados:', error);
-        const teamsBackground = document.getElementById('teamsBackground');
-        teamsBackground.innerHTML = 'Erro ao carregar os dados.';
-    }
-};

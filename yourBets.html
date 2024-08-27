@@ -26,16 +26,12 @@
         <div class="spinner"></div>
     </div>
 
-    <script src="scripts/matches.js"></script>
     <script src="scripts/manage-data.js"></script>
+    <script src="scripts/matches-by-user.js"></script>
     <script>
-        if (!getCookie('userId')) {
-            window.location.href = 'login.html';
-        }
-        
-        const userId = Number(getCookie('userId'));
+        initMatchesByUser(1);
 
-        initMatchesByUser(userId, 1);
+    
     </script>
 </body>
 
