@@ -14,6 +14,4 @@ const buyPoints = (packageType) => {
     }
         
     updatePoints(userId, points);
-
-    alert(`Foi adicionado ${points} em sua carteira`)
 }

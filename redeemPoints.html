@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoccerFortune</title>
+    <title>Redeem Points</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body">
 
+<body>
     <nav class="navbar">
         <ul class="navbar-menu">
             <li class="navbar-item"><a href="index.html" class="navbar-link">Home</a></li>
@@ -21,23 +21,29 @@
         </ul>
     </nav>
 
+    <div class="reedem-points-container">
+        <h2 class="reedem-points-title">Redeem your points for cash</h2>
+        <form id="reedem-points-form">
+            <label for="reedem-points-opcoes" class="reedem-points-label">Choose the number of points:</label>
+            <select id="reedem-points-opcoes" class="reedem-points-select" required>
+                <option value="100">100 points - R$ 10,00</option>
+                <option value="500">500 points - R$ 40,00</option>
+                <option value="1000">1000 points - R$ 85,00</option>
+            </select>
 
-
-
-    <div id="teamsBackground">
-        <div class="spinner"></div>
+            <input type="submit" value="Redeem" class="reedem-points-submit">
+        </form>
     </div>
 
-    <!-- Inclua o arquivo JavaScript -->
     <script src="scripts/manage-data.js"></script>
-    <script src="scripts/matches.js"></script>
+    <script src="scripts/redeem-points.js"></script>
     <script>
         if (!getCookie('userId')) {
             window.location.href = 'login.html';
         }
-
-        initMatches(1);
     </script>
-    </body>
+
+
+</body>
 
 </html>

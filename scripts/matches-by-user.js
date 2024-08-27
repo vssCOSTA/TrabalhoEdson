@@ -41,7 +41,7 @@ const initMatchesByUser = async (pageNumber) => {
             teamsBackground.innerHTML = ''; 
 
             const title = document.createElement('h1');
-            title.textContent = 'Partidas';
+            title.textContent = 'Matches';
             title.style.textAlign = 'center';
             teamsBackground.appendChild(title);
 
@@ -98,7 +98,7 @@ const initMatchesByUser = async (pageNumber) => {
                     dateElement.className = 'match-date';
                     const matchDate = new Date(match.matchDateTimeUTC);
                     const formattedDate = matchDate.toLocaleDateString();
-                    dateElement.textContent = `Data do Jogo: ${formattedDate}`;
+                    dateElement.textContent = `Match Date: ${formattedDate}`;
 
                     matchContainer.appendChild(dateElement);
                     matchContainer.appendChild(imagesContainer);

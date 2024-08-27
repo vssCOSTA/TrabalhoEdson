@@ -11,7 +11,7 @@ const createDatabase = () => {
 
         objectStore.createIndex("username", "username", { unique: true });
     };
-    
+
     request.onsuccess = function (event) {
         let userAdmin = {
             username: 'ADMIN',
@@ -21,8 +21,8 @@ const createDatabase = () => {
                 { matchId: 66631, winnerTeamId: 7, bet: 100, betVerified: true }
             ]
         }
-        
-        registerUser(userAdmin, function() { });
+
+        registerUser(userAdmin, function () { });
     };
 
     request.onerror = function (event) {
@@ -32,7 +32,7 @@ const createDatabase = () => {
 
 
 const registerUser = (user, callback) => {
-    
+
     userExists(user.username, function (exists) {
         if (!exists) {
             let request = indexedDB.open(dbName, 3);
@@ -55,7 +55,7 @@ const registerUser = (user, callback) => {
                     callback(0)
                 };
             }
-        } 
+        }
     });
 }
 
@@ -150,7 +150,7 @@ const setCookie = (name, value, hours) => {
 
 const deleteCookie = (nome) => {
     const dataExpiracao = "Thu, 01 Jan 1970 00:00:00 GMT";
-    
+
     document.cookie = `${nome}=; expires=${dataExpiracao}; path=/`;
 }
 
@@ -170,13 +170,13 @@ const bet = (userId, matchId, winnerTeamId, points) => {
         let objectStore = transaction.objectStore(tblName);
 
         console.log(objectStore)
-        
+
         let action = objectStore.get(userId);
 
         action.onsuccess = function (event) {
             const user = action.result;
-            
-            if (user.points < points){
+
+            if (user.points < points) {
                 alert('insufficient points');
                 return;
             }
@@ -188,14 +188,14 @@ const bet = (userId, matchId, winnerTeamId, points) => {
 
             user.bets.push(newBet);
 
-            if (user){
+            if (user) {
                 const putRequest = objectStore.put(user);
 
-                putRequest.onsuccess = function() {
+                putRequest.onsuccess = function () {
                     alert('Bet successfully placed');
                 };
 
-                putRequest.onerror = function(event) {
+                putRequest.onerror = function (event) {
                     console.error('Erro ao apostar pontos ', event.target.error);
                 };
             }
@@ -223,23 +223,32 @@ const updatePoints = (userId, points) => {
         let objectStore = transaction.objectStore(tblName);
 
         console.log(objectStore)
-        
+
         let action = objectStore.get(userId);
 
         action.onsuccess = function (event) {
             const user = action.result;
             console.log(user)
 
+            if ((user.points += points) < 0) {
+                alert('insufficient points');
+                return;
+            }
+
             user.points += points;
 
-            if (user){
+            if (user) {
                 const putRequest = objectStore.put(user);
 
-                putRequest.onsuccess = function() {
-                    console.log('Pontos adicionados com sucesso!');
+                putRequest.onsuccess = function () {
+                    if (points < 0) {
+                        alert('Points redeemed!');    
+                    } else {
+                        alert('Points successfully added!');
+                    }
                 };
 
-                putRequest.onerror = function(event) {
+                putRequest.onerror = function (event) {
                     console.error('Erro ao adicionar pontos ', event.target.error);
                 };
             }
@@ -247,13 +256,13 @@ const updatePoints = (userId, points) => {
 
         action.onerror = function (event) {
             console.log("Erro ao encontrar Usuário:", event.target.errorCode);
-            callback(false);  // Trate o erro como usuário não encontrado
+            callback(false);
         };
     };
 
     request.onerror = function (event) {
         console.log("Erro ao abrir o banco de dados:", event.target.errorCode);
-        callback(false);  // Trate o erro como usuário não encontrado
+        callback(false);
     };
 }
 
@@ -266,13 +275,13 @@ const getBetsByUser = (userId, callback) => {
 
         let transaction = db.transaction([tblName], "readwrite");
         let objectStore = transaction.objectStore(tblName);
-        
+
         let action = objectStore.get(userId);
 
         action.onsuccess = function (event) {
             const user = action.result;
-            
-            callback(user); 
+
+            callback(user);
         };
 
         action.onerror = function (event) {
@@ -289,8 +298,8 @@ const getBetsByUser = (userId, callback) => {
 
 
 
-document.getElementById('logout').addEventListener('click', function(event) {
-            
+document.getElementById('logout').addEventListener('click', function (event) {
+
     deleteCookie('userId');
     window.location.href = 'login.html';
 });
