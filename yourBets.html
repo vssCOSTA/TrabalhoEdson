@@ -32,6 +32,8 @@
         if (!getCookie('userId')) {
             window.location.href = 'login.html';
         }
+        
+        verifyBets();
 
         initMatchesByUser(1);  
     </script>

@@ -18,7 +18,10 @@ const createDatabase = () => {
             password: '1234',
             points: 2000,
             bets: [
-                { matchId: 66631, winnerTeamId: 7, bet: 100, betVerified: true }
+                { matchId: 72216, winnerTeamId: 7, bet: 1000, betVerified: false },
+                { matchId: 72214, winnerTeamId: 6, bet: 2500, betVerified: false },
+                { matchId: 72221, winnerTeamId: 0, bet: 1400, betVerified: false },
+                { matchId: 72215, winnerTeamId: 0, bet: 10400, betVerified: false },
             ]
         }
 
@@ -184,7 +187,7 @@ const bet = (userId, matchId, winnerTeamId, points) => {
             user.points -= points;
 
 
-            const newBet = { matchId: matchId, winnerTeamId: winnerTeamId, bet: points, betVerified: false }
+            const newBet = { matchId: matchId, winnerTeamId: Number(winnerTeamId), bet: Number(points), betVerified: false }
 
             user.bets.push(newBet);
 
@@ -222,13 +225,11 @@ const updatePoints = (userId, points) => {
         let transaction = db.transaction([tblName], "readwrite");
         let objectStore = transaction.objectStore(tblName);
 
-        console.log(objectStore)
 
         let action = objectStore.get(userId);
 
         action.onsuccess = function (event) {
             const user = action.result;
-            console.log(user)
 
             if ((user.points += points) < 0) {
                 alert('insufficient points');
@@ -241,11 +242,49 @@ const updatePoints = (userId, points) => {
                 const putRequest = objectStore.put(user);
 
                 putRequest.onsuccess = function () {
-                    if (points < 0) {
-                        alert('Points redeemed!');    
-                    } else {
-                        alert('Points successfully added!');
-                    }
+                };
+
+                putRequest.onerror = function (event) {
+                    console.error('Erro ao adicionar pontos ', event.target.error);
+                };
+            }
+        };
+
+        action.onerror = function (event) {
+            console.log("Erro ao encontrar Usuário:", event.target.errorCode);
+            callback(false);
+        };
+    };
+
+    request.onerror = function (event) {
+        console.log("Erro ao abrir o banco de dados:", event.target.errorCode);
+        callback(false);
+    };
+}
+
+
+const closeBets = (userId) => {
+    let request = indexedDB.open(dbName, 3);
+
+    request.onsuccess = function (event) {
+        let db = event.target.result;
+
+        let transaction = db.transaction([tblName], "readwrite");
+        let objectStore = transaction.objectStore(tblName);
+
+        let action = objectStore.get(userId);
+
+        action.onsuccess = function (event) {
+            const user = action.result;
+
+            for (let i = 0; i < user.bets.length; i++) {
+                user.bets[i].betVerified = true
+            }
+
+            if (user) {
+                const putRequest = objectStore.put(user);
+
+                putRequest.onsuccess = function () {
                 };
 
                 putRequest.onerror = function (event) {
@@ -298,6 +337,9 @@ const getBetsByUser = (userId, callback) => {
 
 
 
+createDatabase();
+
+
 document.getElementById('logout').addEventListener('click', function (event) {
 
     deleteCookie('userId');
@@ -308,5 +350,3 @@ document.getElementById('logout').addEventListener('click', function (event) {
 
 
 
-
-createDatabase();

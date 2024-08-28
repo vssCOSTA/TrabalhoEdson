@@ -31,17 +31,31 @@ const initMatchesByUser = async (pageNumber) => {
         getBetsByUser(userId, function (user) {
             const bets = user.bets;
             const auxiliarMatchIds = new Set(bets.map(item => item.matchId));
-            data = allData.filter(item => auxiliarMatchIds.has(item.matchID));
+            data = allData
+                .filter(mainItem =>
+                    mainItem.matchIsFinished &&
+                    bets.some(secItem =>
+                        secItem.matchId === mainItem.matchID
+                    )
+                )
+                .map(mainItem => {
+                    const secItem = bets.find(sec => sec.matchId === mainItem.matchID);
+
+                    return { ...mainItem, bet: secItem.bet, winnerTeamId: secItem.winnerTeamId };
+                })
+                .filter(item => item !== null);
+
+
 
             pageNumber = Math.max(pageNumber, 1) - 1;
             const start = pageNumber * pageSize;
             const end = start + pageSize;
 
             const teamsBackground = document.getElementById('teamsBackground');
-            teamsBackground.innerHTML = ''; 
+            teamsBackground.innerHTML = '';
 
             const title = document.createElement('h1');
-            title.textContent = 'Matches';
+            title.textContent = 'Your Bets';
             title.style.textAlign = 'center';
             teamsBackground.appendChild(title);
 
@@ -58,7 +72,7 @@ const initMatchesByUser = async (pageNumber) => {
                     team1Image.style.width = '100px';
                     team1Image.style.height = '100px';
 
-                    const primaryImageUrl = match.team1.teamIconUrl; 
+                    const primaryImageUrl = match.team1.teamIconUrl;
                     loadImageWithFallback(team1Image, primaryImageUrl, fallbackImageUrl);
 
                     const vsIcon = document.createElement('img');
@@ -100,9 +114,49 @@ const initMatchesByUser = async (pageNumber) => {
                     const formattedDate = matchDate.toLocaleDateString();
                     dateElement.textContent = `Match Date: ${formattedDate}`;
 
+
+                    
+                    
+                    const secondResult = match.matchResults[1];
+                    let isWinnerMatch = false;
+                    let winnerTeamName = match.winnerTeamId === match.team1.teamId ? match.team1.shortName : match.team2.shortName;
+
+                    if (secondResult) {
+                        if (secondResult.pointsTeam1 > secondResult.pointsTeam2) {
+                            isWinnerMatch = match.winnerTeamId === match.team1.teamId;
+                        } else if (secondResult.pointsTeam2 > secondResult.pointsTeam1) {
+                            isWinnerMatch = match.winnerTeamId === match.team2.teamId;
+                        } else {
+                            isWinnerMatch = match.winnerTeamId === 0;
+                        }
+                    }
+
+                    const yourBet = document.createElement('p');
+                    if (isWinnerMatch){                       
+                        if (match.winnerTeamId != 0){
+                            yourBet.textContent = `You bet ${match.bet} points on ${winnerTeamName} and won a ${match.bet * 1.75} prize.`;                            
+                        } else {
+                            yourBet.textContent = `You bet ${match.bet} points on a draw and won a prize of ${match.bet * 1.75}.`;
+                        }     
+                        yourBet.style.color = 'green';                  
+                    } else {
+                        if (match.winnerTeamId != 0){
+                            yourBet.textContent = `You bet ${match.bet} points on ${winnerTeamName} but you lost.`;
+                        } else {
+                            yourBet.textContent = `You bet ${match.bet} points on a draw but you lost.`;
+                        }
+                        yourBet.style.color = 'red';  
+                    }
+                    
+
+                    
+
+
+
                     matchContainer.appendChild(dateElement);
                     matchContainer.appendChild(imagesContainer);
                     matchContainer.appendChild(scoreboard);
+                    matchContainer.appendChild(yourBet);
 
                     teamsBackground.appendChild(matchContainer);
                 });
@@ -162,6 +216,117 @@ function createPaginatorByUser() {
         initMatchesByUser(userId, actualPage);
     };
     paginatorDiv.appendChild(afterButton);
+}
+
+
+const verifyBets = async () => {
+    try {
+        if (allData && allData.length <= 0) {
+            allData = await getMatches();
+        }
+
+        getBetsByUser(userId, function (user) {
+            const bets = user.bets;
+            const auxiliarMatchIds = new Set(
+                bets
+                    .filter(item => item.betVerified === false)
+                    .map(item => ({ matchId: item.matchId, winnerTeamId: item.winnerTeamId }))
+            );
+
+            data = allData.filter(item =>
+                auxiliarMatchIds.has({ matchId: item.matchID, winnerTeamId: item.team2.teamId })
+            );
+
+
+            const filteredMainList = allData
+                .filter(mainItem =>
+                    mainItem.matchIsFinished &&
+                    bets.some(secItem =>
+                        secItem.matchId === mainItem.matchID && !secItem.betVerified
+                    )
+                )
+                .map(mainItem => {
+                    const secItem = bets.find(sec => sec.matchId === mainItem.matchID);
+                    const secondResult = mainItem.matchResults[1]; // Pegando o segundo resultado
+                    const { team1, team2 } = mainItem;
+
+                    // Condições de verificação
+                    let isWinnerMatch = false;
+                    if (secondResult) {
+                        if (secondResult.pointsTeam1 > secondResult.pointsTeam2) {
+                            isWinnerMatch = Number(secItem.winnerTeamId) === team1.teamId;
+                        } else if (secondResult.pointsTeam2 > secondResult.pointsTeam1) {
+                            isWinnerMatch = Number(secItem.winnerTeamId) === team2.teamId;
+                        } else {
+                            isWinnerMatch = secItem.winnerTeamId === 0;
+                        }
+                    }
+
+                    return isWinnerMatch ? { ...mainItem, bet: secItem.bet } : null;
+                })
+                .filter(item => item !== null);
+
+            let totalBets = filteredMainList.reduce((sum, item) => sum + (item.bet || 0), 0);
+
+            if (totalBets > 0) {
+                totalBets *= 1.75;
+
+                updatePoints(userId, totalBets);
+
+                closeBets(userId);
+
+                createAndShowPopup(totalBets);
+            }
+
+
+
+        });
+    } catch (error) {
+        console.error('Erro ao carregar os dados:', error);
+        const teamsBackground = document.getElementById('teamsBackground');
+        teamsBackground.innerHTML = 'Erro ao carregar os dados.';
+    }
+}
+
+
+function createAndShowPopup(points) {
+    // Cria o overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    overlay.id = 'popup-overlay';
+
+    // Cria a popup
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.id = 'popup';
+
+    // Cria a mensagem
+    const message = document.createElement('p');
+    message.id = 'popup-message';
+    message.textContent = `You've earned ${points} points!`;
+    popup.appendChild(message);
+
+    // Cria o botão de fechar
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Fechar';
+    closeButton.onclick = hidePopup;
+    popup.appendChild(closeButton);
+
+    // Adiciona a popup e o overlay ao body
+    document.body.appendChild(overlay);
+    document.body.appendChild(popup);
+
+    // Mostra a popup e o overlay
+    overlay.style.display = 'block';
+    popup.style.display = 'block';
+}
+
+// Função para esconder a popup
+function hidePopup() {
+    const popup = document.getElementById('popup');
+    const overlay = document.getElementById('popup-overlay');
+    if (popup) popup.style.display = 'none';
+    if (overlay) overlay.style.display = 'none';
 }
 
 function loadImageWithFallback(imageElement, primaryUrl, fallbackUrl) {

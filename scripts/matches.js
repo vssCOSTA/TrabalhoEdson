@@ -38,6 +38,7 @@ const initMatches = async (pageNumber) => {
 
         data = allData.slice(start, end);
 
+        console.log(data)
         const teamsBackground = document.getElementById('teamsBackground');
         teamsBackground.innerHTML = ''; // Limpa qualquer conteúdo existente
 
