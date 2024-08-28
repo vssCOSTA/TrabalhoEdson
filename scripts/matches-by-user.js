@@ -14,7 +14,7 @@ const getMatches = async () => {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        totalPages = Math.ceil(data.length / pageSize);
+        
         return data.sort((a, b) => a.matchDateTimeUTC + b.matchDateTimeUTC);
     } catch (error) {
         console.error('Erro:', error);
@@ -30,10 +30,9 @@ const initMatchesByUser = async (pageNumber) => {
 
         getBetsByUser(userId, function (user) {
             const bets = user.bets;
-            const auxiliarMatchIds = new Set(bets.map(item => item.matchId));
-            data = allData
+            
+            const dataBets = allData
                 .filter(mainItem =>
-                    mainItem.matchIsFinished &&
                     bets.some(secItem =>
                         secItem.matchId === mainItem.matchID
                     )
@@ -45,12 +44,16 @@ const initMatchesByUser = async (pageNumber) => {
                 })
                 .filter(item => item !== null);
 
+            
+            totalPages = Math.ceil(dataBets.length / pageSize);
 
 
-            pageNumber = Math.max(pageNumber, 1) - 1;
+            pageNumber = Math.max(actualPage, 1) - 1;
             const start = pageNumber * pageSize;
             const end = start + pageSize;
 
+            data = dataBets.slice(start, end);
+            
             const teamsBackground = document.getElementById('teamsBackground');
             teamsBackground.innerHTML = '';
 
@@ -115,41 +118,44 @@ const initMatchesByUser = async (pageNumber) => {
                     dateElement.textContent = `Match Date: ${formattedDate}`;
 
 
-                    
-                    
-                    const secondResult = match.matchResults[1];
-                    let isWinnerMatch = false;
-                    let winnerTeamName = match.winnerTeamId === match.team1.teamId ? match.team1.shortName : match.team2.shortName;
-
-                    if (secondResult) {
-                        if (secondResult.pointsTeam1 > secondResult.pointsTeam2) {
-                            isWinnerMatch = match.winnerTeamId === match.team1.teamId;
-                        } else if (secondResult.pointsTeam2 > secondResult.pointsTeam1) {
-                            isWinnerMatch = match.winnerTeamId === match.team2.teamId;
-                        } else {
-                            isWinnerMatch = match.winnerTeamId === 0;
-                        }
-                    }
-
                     const yourBet = document.createElement('p');
-                    if (isWinnerMatch){                       
-                        if (match.winnerTeamId != 0){
-                            yourBet.textContent = `You bet ${match.bet} points on ${winnerTeamName} and won a ${match.bet * 1.75} prize.`;                            
-                        } else {
-                            yourBet.textContent = `You bet ${match.bet} points on a draw and won a prize of ${match.bet * 1.75}.`;
-                        }     
-                        yourBet.style.color = 'green';                  
-                    } else {
-                        if (match.winnerTeamId != 0){
-                            yourBet.textContent = `You bet ${match.bet} points on ${winnerTeamName} but you lost.`;
-                        } else {
-                            yourBet.textContent = `You bet ${match.bet} points on a draw but you lost.`;
-                        }
-                        yourBet.style.color = 'red';  
-                    }
                     
+                    if (match.matchIsFinished) {
+                        const secondResult = match.matchResults[1];
+                        let isWinnerMatch = false;
+                        let winnerTeamName = match.winnerTeamId === match.team1.teamId ? match.team1.shortName : match.team2.shortName;
 
-                    
+                        if (secondResult) {
+                            if (secondResult.pointsTeam1 > secondResult.pointsTeam2) {
+                                isWinnerMatch = match.winnerTeamId === match.team1.teamId;
+                            } else if (secondResult.pointsTeam2 > secondResult.pointsTeam1) {
+                                isWinnerMatch = match.winnerTeamId === match.team2.teamId;
+                            } else {
+                                isWinnerMatch = match.winnerTeamId === 0;
+                            }
+                        }
+
+                        
+                        if (isWinnerMatch) {
+                            if (match.winnerTeamId != 0) {
+                                yourBet.textContent = `You bet ${match.bet} points on ${winnerTeamName} and won a ${match.bet * 1.75} prize.`;
+                            } else {
+                                yourBet.textContent = `You bet ${match.bet} points on a draw and won a prize of ${match.bet * 1.75}.`;
+                            }
+                            yourBet.style.color = 'green';
+                        } else {
+                            if (match.winnerTeamId != 0) {
+                                yourBet.textContent = `You bet ${match.bet} points on ${winnerTeamName} but you lost.`;
+                            } else {
+                                yourBet.textContent = `You bet ${match.bet} points on a draw but you lost.`;
+                            }
+                            yourBet.style.color = 'red';
+                        }
+                    }
+
+
+
+
 
 
 
@@ -201,6 +207,7 @@ function createPaginatorByUser() {
         const button = document.createElement('button');
         button.innerText = i;
         button.classList.toggle('active', i === actualPage);
+        button.disabled = i > totalPages;
         button.onclick = () => {
             actualPage = i;
             initMatchesByUser(userId, i);
@@ -213,6 +220,7 @@ function createPaginatorByUser() {
     afterButton.disabled = actualPage === totalPages;
     afterButton.onclick = () => {
         actualPage++;
+        console.log(actualPage)
         initMatchesByUser(userId, actualPage);
     };
     paginatorDiv.appendChild(afterButton);
