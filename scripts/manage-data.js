@@ -235,7 +235,7 @@ const updatePoints = (userId, points) => {
                 alert('insufficient points');
                 return;
             }
-
+            user.points -= points
             user.points += points;
 
             if (user) {

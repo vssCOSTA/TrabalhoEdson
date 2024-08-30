@@ -1,0 +1,95 @@
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Garante que o body ocupe toda a altura da viewport */
+}
+
+/* Estilos gerais do formulário de login */
+#loginForm {
+    background-color: #ffffff; /* Fundo branco para destacar o formulário */
+    border: 1px solid #ccc; /* Borda leve */
+    padding: 0 40px 40px 20px; /* Espaçamento interno */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    max-width: 500px; /* Largura máxima para evitar excesso de largura */
+    width: 100%; /* Ocupa a largura total até o máximo definido */
+}
+
+/* Título do formulário */
+#loginForm h2 {
+    color: #1a73e8; /* Cor azul do título */
+    font-size: 24px; /* Tamanho da fonte */
+    margin-bottom: 20px; /* Espaçamento inferior */
+    text-align: center; /* Centraliza o título */
+}
+
+/* Estilo dos labels */
+#loginForm label {
+    display: block; /* Exibe labels em blocos para ocupar a linha inteira */
+    font-size: 16px; /* Tamanho da fonte */
+    color: #333; /* Cor do texto */
+    margin-bottom: 8px; /* Espaçamento inferior */
+}
+
+/* Estilo dos inputs */
+#loginForm input[type="text"],
+#loginForm input[type="password"] {
+    width: 100%; /* Ocupa a largura total do formulário */
+    padding: 10px; /* Espaçamento interno */
+    font-size: 16px; /* Tamanho da fonte */
+    border: 1px solid #ccc; /* Borda leve */
+    border-radius: 5px; /* Bordas arredondadas */
+    margin-bottom: 15px; /* Espaçamento inferior */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra interna para destaque */
+    transition: border-color 0.3s ease; /* Transição suave para a cor da borda */
+}
+
+#loginForm input[type="text"]:focus,
+#loginForm input[type="password"]:focus {
+    border-color: #1a73e8; /* Cor da borda ao focar */
+    outline: none; /* Remove o outline padrão */
+}
+
+/* Estilo do botão de envio */
+#loginForm button[type="submit"] {
+    background-color: #1a73e8; /* Cor de fundo azul */
+    color: white; /* Cor do texto */
+    padding: 10px 20px; /* Espaçamento interno */
+    border: none; /* Remove a borda padrão */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de mão */
+    font-size: 16px; /* Tamanho da fonte */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transição suave para cor e transformação */
+    display: block; /* Torna o botão um bloco para facilitar a centralização */
+    margin: 20px auto 0; /* Margem superior, automática para centralização horizontal, e inferior */
+}
+
+/* Estilo do botão de envio ao passar o mouse */
+#loginForm button[type="submit"]:hover {
+    background-color: #0b5ed7; /* Cor mais escura ao passar o mouse */
+    transform: translateY(-2px); /* Leve elevação ao passar o mouse */
+}
+
+/* Estilo da mensagem para se inscrever */
+#question-sign-up {
+    text-align: center; /* Centraliza a mensagem */
+    font-size: 14px; /* Tamanho da fonte */
+    color: #666; /* Cor do texto */
+    margin-top: 10px; /* Margem superior */
+}
+
+#question-sign-up a {
+    color: #1a73e8; /* Cor do link */
+    text-decoration: none; /* Remove o sublinhado do link */
+    font-weight: bold; /* Deixa o texto em negrito */
+}
+
+#question-sign-up a:hover {
+    text-decoration: underline; /* Sublinha o link ao passar o mouse */
+}

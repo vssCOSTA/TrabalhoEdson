@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy Points</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/buy-points.css">
 </head>
 
 <body>
@@ -24,27 +25,47 @@
     <header class="buy-points-header">
         <h1>Buy Points</h1>
     </header>
-
+    
     <section class="buy-points-purchase-options">
         <div class="buy-points-card">
             <h3>Basic Pack</h3>
             <p>100 Points</p>
             <p>R$ 10,00</p>
-            <button onclick="buyPoints('basic')">Buy</button>
+            <button onclick="buyPoints(100)">Buy</button>
         </div>
         <div class="buy-points-card">
             <h3>Intermediate Pack</h3>
             <p>500 Points</p>
             <p>R$ 40,00</p>
-            <button onclick="buyPoints('intermediate')">Buy</button>
+            <button onclick="buyPoints(500)">Buy</button>
         </div>
         <div class="buy-points-card">
             <h3>Premium Pack</h3>
             <p>1000 Points</p>
             <p>R$ 85,00</p>
-            <button onclick="buyPoints('premium')">Buy</button>
+            <button onclick="buyPoints(1000)">Buy</button>
+        </div>
+        <!-- Novos pacotes -->
+        <div class="buy-points-card">
+            <h3>Ultimate Pack</h3>
+            <p>2000 Points</p>
+            <p>R$ 160,00</p>
+            <button onclick="buyPoints(2000)">Buy</button>
+        </div>
+        <div class="buy-points-card">
+            <h3>Super Pack</h3>
+            <p>5000 Points</p>
+            <p>R$ 375,00</p>
+            <button onclick="buyPoints(5000)">Buy</button>
+        </div>
+        <div class="buy-points-card">
+            <h3>Mega Pack</h3>
+            <p>10000 Points</p>
+            <p>R$ 700,00</p>
+            <button onclick="buyPoints(10000)">Buy</button>
         </div>
     </section>
+    
 
     <script src="scripts/buy-points.js"></script>
     <script src="scripts/manage-data.js"></script>

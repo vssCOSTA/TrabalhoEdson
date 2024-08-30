@@ -1,0 +1,72 @@
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    color: #333;
+}
+
+/* Estilos do cabeçalho */
+.buy-points-header {
+    padding: 20px; /* Espaçamento interno */
+    text-align: center; /* Centraliza o texto */
+}
+
+.buy-points-header h1 {
+    color: #1a73e8; /* Cor azul do título */
+    font-size: 28px; /* Tamanho da fonte */
+    margin: 0; /* Remove margens */
+}
+
+/* Estilos das opções de compra de pontos */
+.buy-points-purchase-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Ajusta automaticamente as colunas */
+    gap: 20px; /* Espaçamento entre os cards */
+    padding: 20px;
+    max-width: 1200px; /* Largura máxima para evitar excesso de largura */
+    margin: 0 auto; /* Centraliza horizontalmente */
+}
+
+.buy-points-card {
+    background-color: #ffffff; /* Fundo branco para os cards */
+    border: 1px solid #ddd; /* Borda leve */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 20px; /* Espaçamento interno */
+    text-align: center; /* Centraliza o texto */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Transição suave para sombra e transformação */
+}
+
+.buy-points-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Sombra mais intensa ao passar o mouse */
+    transform: scale(1.02); /* Leve aumento ao passar o mouse */
+}
+
+.buy-points-card h3 {
+    color: #333; /* Cor do título do card */
+    font-size: 20px; /* Tamanho da fonte */
+    margin-bottom: 10px; /* Espaçamento inferior */
+}
+
+.buy-points-card p {
+    color: #666; /* Cor do texto */
+    font-size: 16px; /* Tamanho da fonte */
+    margin: 5px 0; /* Margens superior e inferior */
+}
+
+.buy-points-card button {
+    background-color: #1a73e8; /* Cor de fundo azul */
+    color: white; /* Cor do texto */
+    padding: 10px 20px; /* Espaçamento interno */
+    border: none; /* Remove a borda padrão */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de mão */
+    font-size: 16px; /* Tamanho da fonte */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transição suave para cor e transformação */
+}
+
+.buy-points-card button:hover {
+    background-color: #0b5ed7; /* Cor mais escura ao passar o mouse */
+    transform: translateY(-2px); /* Leve elevação ao passar o mouse */
+}

@@ -139,8 +139,10 @@ const initMatches = async (pageNumber) => {
                         openBoxBtn.addEventListener('click', function () {
                             if (betBox.style.display === 'none' || betBox.style.display === '') {
                                 betBox.style.display = 'block';
+                                openBoxBtn.innerText = 'Close Betting Box'
                             } else {
                                 betBox.style.display = 'none';
+                                openBoxBtn.innerText = 'Open Betting Box'
                             }
                         });
 
@@ -155,7 +157,7 @@ const initMatches = async (pageNumber) => {
 
                         const chooses = [
                             { id: `choose1_${index}`, label: match.team1.shortName, value: match.team1.teamId, color: 'blue' },
-                            { id: `choose2_${index}`, label: 'Empate', value: 0, color: 'gray' },
+                            { id: `choose2_${index}`, label: 'Draw', value: 0, color: 'gray' },
                             { id: `choose3_${index}`, label: match.team2.shortName, value: match.team1.teamId, color: 'red' }
                         ];
 
@@ -288,52 +290,6 @@ function createPaginator() {
 }
 
 
-function createPaginatorByUser(userId) {
-    const teamsBackground = document.getElementById('teamsBackground');
-
-    // Cria o div para o conteúdo
-    const contentDiv = document.createElement('div');
-    contentDiv.id = 'content';
-    teamsBackground.appendChild(contentDiv);
-
-    // Cria o div para os botões de paginação
-    const paginatorDiv = document.createElement('div');
-    paginatorDiv.id = 'paginator';
-    paginatorDiv.className = 'paginator';
-    teamsBackground.appendChild(paginatorDiv);
-
-    const beforeButton = document.createElement('button');
-    beforeButton.innerText = '<';
-    beforeButton.disabled = actualPage === 1; // Desativa o botão se estiver na primeira página
-    beforeButton.onclick = () => {
-        actualPage--;
-        initMatchesByUser(userId, actualPage);
-    };
-    paginatorDiv.appendChild(beforeButton);
-
-    let initialIndex = Math.max(1, Math.floor((actualPage) / 5) * 5);
-    let endIndex = Math.min(totalPages, initialIndex + 5);
-
-    for (let i = initialIndex; i <= endIndex; i++) {
-        const button = document.createElement('button');
-        button.innerText = i;
-        button.classList.toggle('active', i === actualPage);
-        button.onclick = () => {
-            actualPage = i;
-            initMatchesByUser(userId, i);
-        };
-        paginatorDiv.appendChild(button);
-    }
-
-    const afterButton = document.createElement('button');
-    afterButton.innerText = '>';
-    afterButton.disabled = actualPage === totalPages; // Desativa o botão se estiver na última página
-    afterButton.onclick = () => {
-        actualPage++;
-        initMatchesByUser(userId, actualPage);
-    };
-    paginatorDiv.appendChild(afterButton);
-}
 
 // Função para atualizar o estado dos botões de paginação
 function updatePaginator(currentPage) {
