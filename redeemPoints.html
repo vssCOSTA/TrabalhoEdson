@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +7,19 @@
     <link rel="stylesheet" href="styles/navbar.css">
     <link rel="stylesheet" href="styles/redeem-points.css">
 </head>
-
 <body>
     <nav class="navbar">
         <ul class="navbar-menu">
+            <li class="navbar-item navbar-item-points">
+                <span id="points-counter">Points: 0</span>
+            </li>
             <li class="navbar-item"><a href="index.html" class="navbar-link">Home</a></li>
             <li class="navbar-item"><a href="yourBets.html" class="navbar-link">Your Bets</a></li>
             <li class="navbar-item"><a href="buyPoints.html" class="navbar-link">Buy Points</a></li>
             <li class="navbar-item"><a href="redeemPoints.html" class="navbar-link">Redeem Points</a></li>
-            <li class="navbar-item navbar-item-logout"><a href="#logout" id="logout"
-                    class="navbar-link navbar-logout">Logout</a>
+            <li class="navbar-item navbar-item-logout"><a href="#logout" id="logout" class="navbar-link navbar-logout">Logout</a></li>
+            <li class="navbar-item navbar-item-welcome">
+             <span id="welcome-message">Welcome, </span>
             </li>
         </ul>
     </nav>
@@ -31,20 +33,41 @@
                 <option value="500">500 points - R$ 40,00</option>
                 <option value="1000">1000 points - R$ 85,00</option>
             </select>
-    
             <input type="submit" value="Redeem" class="reedem-points-submit">
         </form>
     </div>
     
+    <script src="scripts/points-counter.js"></script>
     <script src="scripts/manage-data.js"></script>
     <script src="scripts/redeem-points.js"></script>
     <script>
+        // Checa se o usuário está logado
         if (!getCookie('userId')) {
             window.location.href = 'login.html';
         }
+
+        // Atualiza o contador de pontos na página
+        const updatePointsCounterOnPage = () => {
+            const userPoints = localStorage.getItem('userPoints');
+            const pointsCounter = document.getElementById('points-counter');
+            pointsCounter.textContent = `Points: ${userPoints || 0}`;
+        };
+
+        // Atualiza a saudação com o nome do usuário
+        const updateWelcomeMessage = () => {
+    const username = localStorage.getItem('username');
+    const welcomeMessage = document.getElementById('welcome-message');
+    if (username) {
+        welcomeMessage.textContent = `Welcome, ${username}`;
+    } else {
+        welcomeMessage.textContent = 'Welcome, Guest'; // Ou alguma mensagem padrão
+    }
+};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePointsCounterOnPage();
+            updateWelcomeMessage();
+        });
     </script>
-
-
 </body>
-
 </html>
